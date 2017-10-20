@@ -4,12 +4,12 @@ contract Splitter {
     enum AccountStatus {Unregistered, Registered}
 
     // Admin Address
-    address admin = 0x4991f18d4298859bea3ab8c40a5e30dbd939a442;
+    address admin = 0xAc8a7A8a6BCD4be3012D174b3803E943C582e526;
 
     // Member addresses
     address[] members;
-    mapping (address => uint) position;
-    mapping (address => AccountStatus) status;
+    mapping (address => uint) public position;
+    mapping (address => AccountStatus) public status;
 
     // Number of people paid in last deposit
     uint public paid;
@@ -17,33 +17,15 @@ contract Splitter {
     // The size of the share from the last deposit
     uint public share;
 
-    //DEBUG variables
-    uint public nonce;
-
     // Modifier to require user to be admin
     modifier sudo() {
-        require(tx.origin == admin);
+        require(msg.sender == admin);
         _;
     }
 
-    // Reset the nonce value
-    function resetNonce() public sudo {
-        nonce = 0;
-    }
-
     // Get the number of members in the contract
-    function getMembers() public returns (uint num) {
+    function getMembers() public view returns (uint num) {
         return members.length;
-    }
-
-    // Get address position
-    function getPosition(address addr) public returns (uint index) {
-        return position[addr];
-    }
-
-    // Get address status
-    function getStatus(address addr) public returns (AccountStatus state) {
-        return status[addr];
     }
 
     // Function to add address to the members list
@@ -79,14 +61,24 @@ contract Splitter {
         members.length--;
     }
 
-    // Split the incoming money to all members
-    function deposit() public payable {
-        nonce += 1;
-        share = msg.value / members.length;
+    // Payout function
+    function payout(uint value) private {
+        share = value / members.length;
+        require(share > 0);
         paid = 0;
         for (uint i = 0; i < members.length; i++) {
             members[i].transfer(share);
             paid += 1;
         }
+    }
+
+    // Split the incoming money to all members
+    function deposit() public payable {
+        payout(msg.value);
+    }
+
+    // Fallback function to make sure blind deposits are impossible
+    function () public payable {
+        revert();
     }
 }

@@ -16,10 +16,10 @@ contract TestSplitter {
         splitter.addAddress(testAddr);
         splitter.addAddress(testAddr2);
         
-        assert(splitter.getStatus(testAddr) == Splitter.AccountStatus.Registered);
-        assert(splitter.getPosition(testAddr) == 0);
-        assert(splitter.getStatus(testAddr2) == Splitter.AccountStatus.Registered);
-        assert(splitter.getPosition(testAddr2) == 1);
+        assert(splitter.status(testAddr) == Splitter.AccountStatus.Registered);
+        assert(splitter.position(testAddr) == 0);
+        assert(splitter.status(testAddr2) == Splitter.AccountStatus.Registered);
+        assert(splitter.position(testAddr2) == 1);
     }
 
     // Test the removeAddress Function
@@ -31,25 +31,17 @@ contract TestSplitter {
         splitter.addAddress(testAddr2);
         splitter.removeAddress(testAddr);
 
-        assert(splitter.getStatus(testAddr) == Splitter.AccountStatus.Unregistered);
-        assert(splitter.getPosition(testAddr) == 0);
-        assert(splitter.getPosition(testAddr2) == 2);
+        assert(splitter.status(testAddr) == Splitter.AccountStatus.Unregistered);
+        assert(splitter.position(testAddr) == 0);
+        assert(splitter.position(testAddr2) == 2);
     }
 
     // Test the deposit function
     function testDeposit() public {
-        splitter.resetNonce();
-        uint nonce = splitter.nonce();
-
-        assert(nonce == 0);
-        
         uint members = splitter.getMembers();
         assert(members == 3);
 
         splitter.deposit.value(1 ether)();
-        nonce = splitter.nonce();
-
-        assert(nonce == 1);
 
         uint paid = splitter.paid();
         uint share = splitter.share();
