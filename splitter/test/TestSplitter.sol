@@ -39,7 +39,7 @@ contract TestSplitter {
     // Test the deposit function
     function testDeposit() public {
         splitter.resetNonce();
-        uint nonce = splitter.getNonce();
+        uint nonce = splitter.nonce();
 
         assert(nonce == 0);
         
@@ -47,12 +47,12 @@ contract TestSplitter {
         assert(members == 3);
 
         splitter.deposit.value(1 ether)();
-        nonce = splitter.getNonce();
+        nonce = splitter.nonce();
 
         assert(nonce == 1);
 
-        uint paid = splitter.getPaid();
-        uint share = splitter.getShare();
+        uint paid = splitter.paid();
+        uint share = splitter.share();
         uint expectedPaid = 3;
         uint expectedShare = uint(1 ether) / expectedPaid;
 
