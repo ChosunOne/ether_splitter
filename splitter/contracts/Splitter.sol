@@ -12,13 +12,13 @@ contract Splitter {
     mapping (address => AccountStatus) status;
 
     // Number of people paid in last deposit
-    uint paid;
+    uint public paid;
 
     // The size of the share from the last deposit
-    uint share;
+    uint public share;
 
     //DEBUG variables
-    uint nonce;
+    uint public nonce;
 
     // Modifier to require user to be admin
     modifier sudo() {
@@ -31,24 +31,9 @@ contract Splitter {
         nonce = 0;
     }
 
-    // Get the nonce
-    function getNonce() public returns (uint num) {
-        return nonce;
-    }
-
     // Get the number of members in the contract
     function getMembers() public returns (uint num) {
         return members.length;
-    }
-
-    // Get the number of paid addresses from the last deposit
-    function getPaid() public returns (uint num) {
-        return paid;
-    }
-
-    // Get the share from the last deposit
-    function getShare() public returns (uint num) {
-        return share;
     }
 
     // Get address position
